@@ -15,9 +15,12 @@ Expected role/tasks of each members
 
 Envisioned Python tools, modules and classes for each part
 * Pandas
+* matplotlib
+* numpy
+* datetime 
 
 
-Link to a newly created github project
+Link to a newly created github project: git@github.com:lziegler08/COVID_dash.git
 
 
 This will allow us to give you early feedback, and suggest tools relevant to your approach.
