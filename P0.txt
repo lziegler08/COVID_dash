@@ -1,0 +1,23 @@
+Laura will create post on Piazza
+
+For this part, you are expected to send us a post through Piazza (private post to Instructors and team members) containing:
+
+The team members names and UIDs (will post uID's to piazza, leave blank for now since this is a public project) 
+* Claire Ticknor
+* Elliott Marsden
+* Laura Ziegler
+
+
+Expected role/tasks of each members
+* Claire Ticknor:
+* Elliott Marsden: 
+* Laura Ziegler: GitHub organization, project submission
+
+Envisioned Python tools, modules and classes for each part
+* Pandas
+
+
+Link to a newly created github project
+
+
+This will allow us to give you early feedback, and suggest tools relevant to your approach.
