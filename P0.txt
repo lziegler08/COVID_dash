@@ -44,4 +44,4 @@ ATTRIBUTES
 Sources: 
 gmap - https://docs.bokeh.org/en/latest/docs/reference/plotting/gmap.html 
 
-Link to a newly created github project: git@github.com:lziegler08/COVID_dash.git
+Link to a newly created github project: https://github.com/lziegler08/COVID_dash.git
