@@ -1,0 +1,22 @@
+{
+    "USA": {
+        "Country": "USA",
+        "Daily": "5",
+        "Cumulative": "300"
+    },
+    "France": {
+        "Country": "France",
+        "Daily": "9",
+        "Cumulative": "400"
+    },
+    "Brazil": {
+        "Country": "Brazil",
+        "Daily": "3",
+        "Cumulative": "500"
+    },
+    "Mexico": {
+        "Country": "Mexico",
+        "Daily": "9",
+        "Cumulative": "600"
+    }
+}
