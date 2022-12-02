@@ -32,7 +32,10 @@ class ScrapeWebsite:
         req = requests.get(self.URL)
         soup = BeautifulSoup(req.content, 'html.parser')
         table = soup.find('table', attrs={self.attr:self.attr_val})
-        table_body = table.find('tbody')
+        if self.siteName == 'ny_times':
+            table_body = table.find('tbody', attrs={self.attr:'children'})
+        else:
+            table_body = table.find('tbody')
         rows = table_body.find_all('tr')
         print(len(rows))
         return rows
@@ -54,11 +57,11 @@ class ScrapeWebsite:
                 
                 dList = [i.text.strip() for i in cols]
                 for c in self.countries:
-                    if c.lower() == dList[self.nameIDX].lower():
+                    if c.lower() == dList[self.nameIDX].lower() or self.siteName == 'ny_times':
                         countryProfiles['name'].append(dList[self.nameIDX])
-                        countryProfiles['population'].append(int(dList[self.popIDX].replace(',', '')))
-                        countryProfiles['total cases'].append(int(dList[self.casesIDX].replace(',', '')))
-                        countryProfiles['total deaths'].append(int(dList[self.deathIDX].replace(',', '')))
+                        countryProfiles['population'].append(float(dList[self.popIDX].replace(',', '')))
+                        countryProfiles['total cases'].append(float(dList[self.casesIDX].replace(',', '')))
+                        countryProfiles['total deaths'].append(float(dList[self.deathIDX].replace(',', '')))
                         countryProfiles['date collected'].append(today)
                         break
             json.dump(countryProfiles, womJ)
@@ -80,3 +83,15 @@ wom = ScrapeWebsite(countries, wom_url, wom_siteName, wom_savePath,\
                   wom_attr, wom_attr_val, 1, 14, 2, 4)
 wom_data = wom.scrape_country()
 print(wom_data)
+
+
+nyt_url = 'https://www.nytimes.com/interactive/2021/world/covid-cases.html'
+nyt_siteName = 'ny_times'
+nyt_savePath = 'C:/Users/Elliott/Documents/PE_final/'
+nyt_attr = 'class'
+nyt_attr_val = 'g-table super-table withchildren'
+nyt =  ScrapeWebsite(countries, nyt_url, nyt_siteName, nyt_savePath,\
+                  nyt_attr, nyt_attr_val, 0, 4, 4, 1)
+nyt_data = nyt.scrape_country()
+
+print(nyt_data)
