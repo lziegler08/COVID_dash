@@ -1,6 +1,21 @@
 P1 Report 
 
 How was data collected?:
+Two websites were chosen for data collection of covid mortality: 
+* https://www.worldometers.info/coronavirus/
+* https://www.nytimes.com/interactive/2021/world/covid-cases.html
 
+The following libraries were utilized for web scraping:
+* Beautiful Soup
+* requests
+* json
+* pandas
+* datetime
+
+Only ten countries were chosen from the nytimes due to the "Show more" button required to be clicked to present additional country data. Additional libraries and code would be needed to click the "Show more" button to generate data for all the countries. 
 
 How is JSON(s) organized?:
+
+
+Additional notes:
+Data from https://coronavirus.jhu.edu/data/mortality. However, the page was rendered with JavaScript and more libraries would have been required to pull the whole html file. 
