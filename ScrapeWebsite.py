@@ -31,52 +31,82 @@ class ScrapeWebsite:
     def reqURL(self):
         req = requests.get(self.URL)
         soup = BeautifulSoup(req.content, 'html.parser')
-        
+        table = soup.find('table', attrs={self.attr:self.attr_val})
         if self.siteName == 'ny_times':
-            table = soup.find('table', attrs={self.attr:self.attr_val})
             table_body = table.find('tbody', attrs={self.attr:'children'})
-        if self.siteName == 'jh':
-            div1 = soup.find('div', id="root")# ,class_="Application_base__2F4pY")
-            
-            div2 = div1.find('div', class_="MortalityRates_container__2S9lV")#, class_="MortalityRates_container__2S9lV")#"SideNarrative_content__3qL1H")
-            #div3 = div2.find('div', class_="MortalityTable_base__3roaP")#, class_="MortalityRates_container__2S9lV") #,class_="MortalityTable_base__3roaP")
-            div4 = div2.find_all('div') #, class_="MortalityTable_base__3roaP")
-            # table = div4.find_all('table')
-            #, attrs={self.attr:self.attr_val})
-            #, attrs={self.attr:self.attr_val})
-            print(div4)
         else:
-            table = soup.find('table', attrs={self.attr:self.attr_val})
             table_body = table.find('tbody')
         rows = table_body.find_all('tr')
-        print(len(rows))
         return rows
     
     def getDate(self):
         return str(date.today())
-    
-    def scrape_country(self):
+
+
+
+    def scrape_wom(self):
         countryProfiles = {'name': [],
                            'population': [],
                            'total cases': [],
                            'total deaths':[],
                            'date collected': []}
         today = self.getDate()
+        for r in self.tableRows:
+            cols = r.find_all('td')
+            
+            dList = [i.text.strip() for i in cols]
+            for c in self.countries:
+                if c.lower() == dList[self.nameIDX].lower():
+                    countryProfiles['name'].append(dList[self.nameIDX])
+                    countryProfiles['population'].append(float(dList[self.popIDX].replace(',', '')))
+                    countryProfiles['total cases'].append(float(dList[self.casesIDX].replace(',', '')))
+                    countryProfiles['total deaths'].append(float(dList[self.deathIDX].replace(',', '')))
+                    countryProfiles['date collected'].append(today)
+                    break
+        return countryProfiles 
+
+    def scrape_nyt(self):
+        countryProfiles = {'name': [],
+                           'daily deaths avg': [],
+                           'per 100k': [],
+                           'date collected': []}
+        today = self.getDate()
+        for r in self.tableRows:
+            cols = r.find_all('td')
+            dList = [i.text.strip() for i in cols]
+            try:
+                dList[0] = dList[0].split('\xa0')[0]
+            except:
+                pass
+            
+            countryProfiles['name'].append(dList[0])
+            countryProfiles['daily deaths avg'].append(float(dList[4].replace(',', '')))
+            try:
+                countryProfiles['per 100k'].append(float(dList[5].replace(',', '')))
+            except ValueError:
+                countryProfiles['per 100k'].append(0.0)
+            countryProfiles['date collected'].append(today)
+            
+        return countryProfiles
+
+
+    def scrape_JH(self):
+        countryProfiles = {'name': [],
+                           'population': [],
+                           'total cases': [],
+                           'total deaths':[],
+                           'date collected': []}
+
+
+    def scrape_country(self):
+        today = self.getDate()
         self.jsonPath = self.savePath + self.siteName + '_' +  today + ".json"
         with open(self.jsonPath, "w") as womJ:
-            for r in self.tableRows:
-                cols = r.find_all('td')
-                
-                dList = [i.text.strip() for i in cols]
-                for c in self.countries:
-                    if c.lower() == dList[self.nameIDX].lower() or self.siteName == 'ny_times':
-                        countryProfiles['name'].append(dList[self.nameIDX])
-                        countryProfiles['population'].append(float(dList[self.popIDX].replace(',', '')))
-                        countryProfiles['total cases'].append(float(dList[self.casesIDX].replace(',', '')))
-                        countryProfiles['total deaths'].append(float(dList[self.deathIDX].replace(',', '')))
-                        countryProfiles['date collected'].append(today)
-                        break
-            json.dump(countryProfiles, womJ)
+            if self.siteName == 'ny_times':
+                cProf = self.scrape_nyt()
+            if self.siteName == 'world-o-meter':
+                cProf = self.scrape_wom()
+            json.dump(cProf, womJ)
         return self.buildDF()
         
     def buildDF(self):
@@ -85,7 +115,7 @@ class ScrapeWebsite:
 
 
 countries = ['brazil', 'usa', 'france', 'austria', 'Monaco', 'greece']
-"""
+
 wom_url = 'https://www.worldometers.info/coronavirus/#countries'
 wom_siteName = 'world-o-meter'
 wom_savePath = '/Users/lauraziegler/Documents/GitHub/COVID_dash/'
@@ -107,8 +137,8 @@ nyt =  ScrapeWebsite(countries, nyt_url, nyt_siteName, nyt_savePath,\
 nyt_data = nyt.scrape_country()
 
 print(nyt_data)
-"""
 
+"""
 jh_url = 'https://coronavirus.jhu.edu/data/mortality'
 jh_siteName = 'jh'
 jh_savePath = '/Users/lauraziegler/Documents/GitHub/COVID_dash/'
@@ -119,4 +149,5 @@ jh =  ScrapeWebsite(countries, jh_url, jh_siteName, jh_savePath,\
 jh_data = jh.scrape_country()
 
 print(jh_data)
+"""
 #%%
