@@ -13,6 +13,8 @@ import json
 from datetime import date
 import os
 import time
+from selenium import webdriver
+
 
 class ScrapeWebsite:
     def __init__(self, countries, URL, siteName, savePath, attr, attr_val, nameIDX, popIDX, deathIDX, casesIDX):
@@ -31,20 +33,22 @@ class ScrapeWebsite:
     def reqURL(self):
         req = requests.get(self.URL)
         soup = BeautifulSoup(req.content, 'html.parser')
-        
+        # print(soup.prettify()) # 
+
         if self.siteName == 'ny_times':
             table = soup.find('table', attrs={self.attr:self.attr_val})
             table_body = table.find('tbody', attrs={self.attr:'children'})
-        if self.siteName == 'jh':
-            div1 = soup.find('div', id="root")# ,class_="Application_base__2F4pY")
-            
-            div2 = div1.find('div', class_="MortalityRates_container__2S9lV")#, class_="MortalityRates_container__2S9lV")#"SideNarrative_content__3qL1H")
-            #div3 = div2.find('div', class_="MortalityTable_base__3roaP")#, class_="MortalityRates_container__2S9lV") #,class_="MortalityTable_base__3roaP")
-            div4 = div2.find_all('div') #, class_="MortalityTable_base__3roaP")
-            # table = div4.find_all('table')
-            #, attrs={self.attr:self.attr_val})
-            #, attrs={self.attr:self.attr_val})
-            print(div4)
+        
+        elif self.siteName == 'jh':
+        
+            div = soup.find('div', class_='Application_base__2F4pY')
+            div2 = div.find('div', class_='SideNarrative_content__3qL1H')
+            div3 = div2.find('div', class_='MortalityRates_container__2S9lV')
+            div4 = div3.find('div')
+            div5 = div4.find('div')
+            # print(div)
+
+    
         else:
             table = soup.find('table', attrs={self.attr:self.attr_val})
             table_body = table.find('tbody')
@@ -111,7 +115,7 @@ print(nyt_data)
 
 jh_url = 'https://coronavirus.jhu.edu/data/mortality'
 jh_siteName = 'jh'
-jh_savePath = '/Users/lauraziegler/Documents/GitHub/COVID_dash/'
+jh_savePath = '/Users/lauraziegler/Documents/Python/COVID_dash/'
 jh_attr = 'class'
 jh_attr_val = 'g-table super-table withchildren'
 jh =  ScrapeWebsite(countries, jh_url, jh_siteName, jh_savePath,\
@@ -119,4 +123,6 @@ jh =  ScrapeWebsite(countries, jh_url, jh_siteName, jh_savePath,\
 jh_data = jh.scrape_country()
 
 print(jh_data)
+# %%
+
 #%%
