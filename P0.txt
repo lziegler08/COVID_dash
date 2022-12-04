@@ -1,0 +1,47 @@
+Laura will create post on Piazza
+
+For this part, you are expected to send us a post through Piazza (private post to Instructors and team members) containing:
+
+The team members names and UIDs (will post uID's to piazza, leave blank for now since this is a public project) 
+* Claire Ticknor
+* Elliott Marsden
+* Laura Ziegler
+
+Expected role/tasks of each members: 
+There will be a lead for each project part. Each team member will contribute to all aspects of the project.
+* Claire Ticknor: Lead module researcher, lead plot designer
+* Elliott Marsden: Lead data scraper (cleaning, processing)
+* Laura Ziegler: GitHub organization (merging branches, code reviewer), project submission
+
+Envisioned Python tools, modules and classes for each part
+MODULES
+* Pandas
+* matplotlib
+* numpy
+* datetime 
+* json
+* request (for ScrapeWebsite module)
+* beautiful soup (for ScrapeWebsite module)
+* selenium (use if website only written in Java script) 
+* Bokeh (turns into html) 
+* math
+
+CLASS: COVID_Country
+ATTRIBUTES
+* country name
+* data source url 
+* last updated date
+* Daily death rates (raw/normalized)
+* Cummulative death rates (raw/normalized) 
+
+CLASS: DeathPlot
+ATTRIBUTES
+* plot type (bar, pie, line, map style) 
+* X,Y data (death rate, time) 
+* color scheme (color map) 
+* labels (country name) 
+
+Sources: 
+gmap - https://docs.bokeh.org/en/latest/docs/reference/plotting/gmap.html 
+
+Link to a newly created github project: https://github.com/lziegler08/COVID_dash.git

@@ -1,0 +1,25 @@
+P1 Report 
+
+How was data collected?:
+Two websites were chosen for data collection of covid mortality: 
+* https://www.worldometers.info/coronavirus/
+* https://www.nytimes.com/interactive/2021/world/covid-cases.html
+
+The following libraries were utilized for web scraping:
+* Beautiful Soup
+* requests
+* json
+* pandas
+* datetime
+
+Both sources are scraped by identifying <table> elements within the returned html data structure. All of the table rows are found, and then a for loop iterates over the row's columns. Relevant data is extracted and saved to a dictionary of lists with keys corresponding to the column headers.
+
+Only ten countries were chosen from the New York Times (NYT) due to the "Show more" button required to be clicked to present additional country data. Additional libraries and code would be needed to click the "Show more" button to generate data for all the countries. At runtime, all available data is scraped (ten countries).
+
+For World O Meter (WOM), the user dictates the countries of interest. At runtime, all country data is scraped but only the countries listed in the "countries" list are written to the .JSON file.
+
+How is JSON(s) organized?:
+Each source, NYT and WOM, have their own .JSON file. Each saved .JSON is named with a combination of the source name and current date. All countries on World O Meter are queried for current death counts and population. Any countries listed in the "countries" list are stored in the country statistics dictionary and dumped to a .JSON file. NYT provides less data, and only the countries with the top ten death rates are scraped and stored to its respective .JSON. In both .JSON files each countries respective data is related to an index positon within the dictionary lists. 
+
+Additional notes:
+Data from https://coronavirus.jhu.edu/data/mortality. However, the page was rendered with JavaScript and more libraries would have been required to pull the whole html file. 
