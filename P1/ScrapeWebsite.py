@@ -114,7 +114,7 @@ class ScrapeWebsite:
         return self.df
 
 
-countries = ['brazil', 'usa', 'france', 'austria', 'Monaco', 'greece']
+countries = ['brazil', 'usa', 'france', 'austria', 'Monaco', 'greece', 'brunei', 'hong kong', 'paraguay', 'south korea', 'New Zealand', 'japan', 'Palau', 'Andorra']
 
 wom_url = 'https://www.worldometers.info/coronavirus/#countries'
 wom_siteName = 'world-o-meter'
