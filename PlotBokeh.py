@@ -5,7 +5,7 @@
 import json
 from bokeh.plotting import figure, show
 from bokeh.transform import factor_cmap
-from bokeh.models import ColumnDataSource, CustomJS, FactorRange, HoverTool
+from bokeh.models import ColumnDataSource, CustomJS, FactorRange, HoverTool, Legend
 from bokeh.layouts import column, row, gridplot
 from bokeh.models.widgets import Panel, Tabs
 from operator import truediv
@@ -116,8 +116,9 @@ labels = ['Deaths', 'Cases', 'Healthy']
 p1start, p1end = getPieAngles(0)
 percent1 = [100*death_percent[0], 100*case_percent[0], 100-((100*death_percent[0]+100*case_percent[0]))]
 source1 = ColumnDataSource(dict(p1start=p1start, p1end=p1end, labels=labels, color = color, percent1 = percent1))
-p1 = figure(height = 350, width = 350, title="USA", toolbar_location=None, tools="hover")
-p1.wedge(x=0,y=0,radius=0.8,start_angle = 'p1start', end_angle = 'p1end', color='color', source=source1)
+p1 = figure(height = 350, width = 500, title="Cumulative Death in the Population", toolbar_location=None, tools="hover")
+p1.add_layout(Legend(),'right')
+p1.wedge(x=0,y=0,radius=0.8,start_angle = 'p1start', end_angle = 'p1end', color='color', source=source1,  legend_group='labels')
 hover = p1.select(dict(type=HoverTool))
 hover.tooltips = [('Category','@labels'),("Percentage","@percent1")]
 p1.axis.visible = False
@@ -126,8 +127,9 @@ tab1 = Panel(child=p1, title="USA")
 p2start, p2end = getPieAngles(1)
 percent2 = [100*death_percent[1], 100*case_percent[1], 100-((100*death_percent[1]+100*case_percent[1]))]
 source2 = ColumnDataSource(dict(p2start=p2start, p2end=p2end, labels=labels, color = color, percent2 = percent2))
-p2 = figure(height = 350, width = 350, title="France", toolbar_location=None, tools="hover")
-p2.wedge(x=0,y=0,radius=0.8,start_angle = 'p2start', end_angle = 'p2end', color='color', source=source2)
+p2 = figure(height = 350, width = 500, title="Cumulative Death in the Population", toolbar_location=None, tools="hover")
+p2.add_layout(Legend(),'right')
+p2.wedge(x=0,y=0,radius=0.8,start_angle = 'p2start', end_angle = 'p2end', color='color', source=source2, legend_group='labels')
 hover = p2.select(dict(type=HoverTool))
 hover.tooltips = [('Category','@labels'),("Percentage","@percent2")]
 p2.axis.visible = False
@@ -136,8 +138,9 @@ tab2 = Panel(child=p2, title="France")
 p3start, p3end = getPieAngles(2)
 percent3 = [100*death_percent[2], 100*case_percent[2], 100-((100*death_percent[2]+100*case_percent[2]))]
 source3 = ColumnDataSource(dict(p3start=p3start, p3end=p3end, labels=labels, color = color, percent3 = percent3))
-p3 = figure(height = 350, width = 350, title="Brazil", toolbar_location=None, tools="hover")
-p3.wedge(x=0,y=0,radius=0.8,start_angle = 'p3start', end_angle = 'p3end', color='color', source=source3)
+p3 = figure(height = 350, width = 500, title="Cumulative Death in the Population", toolbar_location=None, tools="hover")
+p3.add_layout(Legend(),'right')
+p3.wedge(x=0,y=0,radius=0.8,start_angle = 'p3start', end_angle = 'p3end', color='color', source=source3, legend_group='labels')
 hover = p3.select(dict(type=HoverTool))
 hover.tooltips = [('Category','@labels'),("Percentage","@percent3")]
 p3.axis.visible = False
@@ -146,8 +149,9 @@ tab3 = Panel(child=p3, title="Brazil")
 p4start, p4end = getPieAngles(3)
 percent4 = [100*death_percent[3], 100*case_percent[3], 100-((100*death_percent[3]+100*case_percent[3]))]
 source4 = ColumnDataSource(dict(p4start=p4start, p4end=p4end, labels=labels, color = color, percent4 = percent4))
-p4 = figure(height = 350, width = 350, title="Austria", toolbar_location=None, tools="hover")
-p4.wedge(x=0,y=0,radius=0.8,start_angle = 'p4start', end_angle = 'p4end', color='color', source=source4)
+p4 = figure(height = 350, width = 500, title="Cumulative Death in the Population", toolbar_location=None, tools="hover")
+p4.add_layout(Legend(),'right')
+p4.wedge(x=0,y=0,radius=0.8,start_angle = 'p4start', end_angle = 'p4end', color='color', source=source4, legend_group='labels')
 hover = p4.select(dict(type=HoverTool))
 hover.tooltips = [('Category','@labels'),("Percentage","@percent4")]
 p4.axis.visible = False
@@ -156,8 +160,9 @@ tab4 = Panel(child=p4, title="Austria")
 p5start, p5end = getPieAngles(4)
 percent5 = [100*death_percent[4], 100*case_percent[4], 100-((100*death_percent[4]+100*case_percent[4]))]
 source5 = ColumnDataSource(dict(p5start=p5start, p5end=p5end, labels=labels, color = color, percent5 = percent5))
-p5 = figure(height = 350, width = 350, title="Greece", toolbar_location=None, tools="hover")
-p5.wedge(x=0,y=0,radius=0.8,start_angle = 'p5start', end_angle = 'p5end', color='color', source = source5)
+p5 = figure(height = 350, width = 500, title="Cumulative Death in the Population", toolbar_location=None, tools="hover")
+p5.add_layout(Legend(),'right')
+p5.wedge(x=0,y=0,radius=0.8,start_angle = 'p5start', end_angle = 'p5end', color='color', source = source5, legend_group='labels')
 hover = p5.select(dict(type=HoverTool))
 hover.tooltips = [('Category','@labels'),("Percentage","@percent5")]
 p5.axis.visible = False
@@ -166,8 +171,9 @@ tab5 = Panel(child=p5, title="Greece")
 p6start, p6end = getPieAngles(5)
 percent6 = [100*death_percent[5], 100*case_percent[5], 100-((100*death_percent[5]+100*case_percent[5]))]
 source6 = ColumnDataSource(dict(p6start=p6start, p6end=p6end, labels=labels, color = color, percent6 = percent6))
-p6 = figure(height = 350, width = 350, title="Monaco", toolbar_location=None, tools="hover")
-p6.wedge(x=0,y=0,radius=0.8,start_angle = 'p6start', end_angle = 'p6end', color='color', source=source6)
+p6 = figure(height = 350, width = 500, title="Cumulative Death in the Population", toolbar_location=None, tools="hover")
+p6.add_layout(Legend(),'right')
+p6.wedge(x=0,y=0,radius=0.8,start_angle = 'p6start', end_angle = 'p6end', color='color', source=source6, legend_group='labels')
 hover = p6.select(dict(type=HoverTool))
 hover.tooltips = [('Category','@labels'),("Percentage","@percent6")]
 p6.axis.visible = False
