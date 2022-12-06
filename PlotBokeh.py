@@ -8,6 +8,7 @@ from bokeh.transform import factor_cmap
 from bokeh.models import ColumnDataSource, CustomJS, FactorRange, HoverTool, Legend
 from bokeh.layouts import column, row, gridplot
 from bokeh.models.widgets import Panel, Tabs
+from bokeh.palettes import Spectral6
 from operator import truediv
 import math
 
@@ -20,7 +21,7 @@ def jsonToDict(file):
     return data
 
 # function to get certain data from dictionaries
-def getData(files,type,pos,norm = 0):
+def getData(files,type,pos,norm = 0,ny=0):
     results = []
     for file in files:
         for i,c in enumerate(file['name']):
@@ -28,6 +29,8 @@ def getData(files,type,pos,norm = 0):
                 temp = file[type][i]
                 if norm == 1: #normalize for population per 1M
                     temp = (temp/(file['population'][i])*100000000)
+                if ny == 1: #normaliz for population per 1M
+                    temp = (temp/(file['per 100k'][i])*100)
                 results.append(temp)
     return results
 
@@ -39,16 +42,21 @@ def getPieAngles(case):
 
 
 # Open json files and convert to a dictionary
-files = ['world-o-meter_2022-12-01.json', 'world-o-meter_2022-12-02.json','world-o-meter_2022-12-03.json']
-jsonWOM = [jsonToDict(files[0]),jsonToDict(files[1]),jsonToDict(files[2])]
+files = ['world-o-meter_2022-12-01.json', 'world-o-meter_2022-12-02.json','world-o-meter_2022-12-03.json','world-o-meter_2022-12-04.json','world-o-meter_2022-12-05.json']
+jsonWOM = [jsonToDict(files[0]),jsonToDict(files[1]),jsonToDict(files[2]),jsonToDict(files[3]),jsonToDict(files[4])]
+nyfiles = ['ny_times_2022-12-02.json','ny_times_2022-12-03.json','ny_times_2022-12-04.json','ny_times_2022-12-05.json']
+jsonNY = [jsonToDict(nyfiles[0]),jsonToDict(nyfiles[1]),jsonToDict(nyfiles[2]),jsonToDict(nyfiles[3])]
 
 # Create plots
 # Universal data:
 datesWOM = getData(jsonWOM,'date collected','USA')
 datesWOM = [i.replace('-','_') for i in datesWOM]
 datesWOM = [j.replace('2022_','') for j in datesWOM]
+datesNY = getData(jsonNY,'date collected','USA')
+datesNY = [i.replace('-','_') for i in datesNY]
+datesNY = [j.replace('2022_','') for j in datesNY]
 countries = ['USA','France','Brazil','Austria','Greece','Monaco']
-colors = ["#c9d9d3", "#718dbf", "#e84d60"]
+colors = ["#c9d9d3", "#718dbf", "#e84d60",'orange','maroon','green']
 
 USAdeathsWOM = getData(jsonWOM,'total deaths','USA',0)
 FrancedeathsWOM = getData(jsonWOM,'total deaths','France',0)
@@ -56,6 +64,13 @@ BrazildeathsWOM = getData(jsonWOM,'total deaths','Brazil',0)
 AustriadeathsWOM = getData(jsonWOM,'total deaths','Austria',0)
 GreecedeathsWOM = getData(jsonWOM,'total deaths','Greece',0)
 MonacodeathsWOM = getData(jsonWOM,'total deaths','Monaco',0)
+
+USAdeathsWOMnorm = getData(jsonWOM,'total deaths','USA',1)
+FrancedeathsWOMnorm = getData(jsonWOM,'total deaths','France',1)
+BrazildeathsWOMnorm = getData(jsonWOM,'total deaths','Brazil',1)
+AustriadeathsWOMnorm = getData(jsonWOM,'total deaths','Austria',1)
+GreecedeathsWOMnorm = getData(jsonWOM,'total deaths','Greece',1)
+MonacodeathsWOMnorm = getData(jsonWOM,'total deaths','Monaco',1)
 
 USAcasesWOM = getData(jsonWOM,'total cases','USA',0)
 FrancecasesWOM = getData(jsonWOM,'total cases','France',0)
@@ -71,29 +86,17 @@ AustriapopWOM = getData(jsonWOM,'population','Austria',0)
 GreecepopWOM = getData(jsonWOM,'population','Greece',0)
 MonacopopWOM = getData(jsonWOM,'population','Monaco',0)
 
-# Line dots to show total deaths
-#p1 = figure(x_range = datesWOM, title="Total Deaths Normalized by Population", x_axis_label = "Date", y_axis_label = "Total Deaths")
-#p2.circle(datesWOM,FrancedeathsWOM, legend_label="France", color="red", size = 10)
-#p1.circle(datesWOM,BrazildeathsWOM, legend_label="Brazil", color="green", size = 10)
-#p1.circle(datesWOM,AustriadeathsWOM, legend_label="Austria", color="purple", size = 10)
-#p1.circle(datesWOM,GreecedeathsWOM, legend_label="Greece", color="pink", size = 10)
-#p1.circle(datesWOM,MonacodeathsWOM, legend_label="Monaco", color="orange", size = 10)
-#show(p1)
-
 # Stacked Bar Plot for Total Deaths
 source_data = {'countries': countries,
-            '2022_12_01': [USAdeathsWOM[0], FrancedeathsWOM[0], BrazildeathsWOM[0], AustriadeathsWOM[0], GreecedeathsWOM[0], MonacodeathsWOM[0]],
-            '2022_12_02': [USAdeathsWOM[1], FrancedeathsWOM[1], BrazildeathsWOM[1], AustriadeathsWOM[1], GreecedeathsWOM[1], MonacodeathsWOM[1]],
-            '2022_12_03': [USAdeathsWOM[2], FrancedeathsWOM[2], BrazildeathsWOM[2], AustriadeathsWOM[2], GreecedeathsWOM[2], MonacodeathsWOM[2]]}
+            '2022_12_05': [USAdeathsWOMnorm[4], FrancedeathsWOMnorm[4], BrazildeathsWOMnorm[4], AustriadeathsWOMnorm[4], GreecedeathsWOMnorm[4], MonacodeathsWOMnorm[4]]}
 
-print(datesWOM)
-x = [(country,date) for country in countries for date in datesWOM]
-counts = sum(zip(source_data['2022_12_01'], source_data['2022_12_02'], source_data['2022_12_03']),())
+x = countries #[(country,date) for country in countries for date in datesWOM[4]]
+counts = sum(zip(source_data['2022_12_05']),())
 
-source = ColumnDataSource(data=dict(x=x,counts=counts))
+source = ColumnDataSource(data=dict(x=x,counts=counts,color=Spectral6))
 
-p = figure(x_range=FactorRange(*x), height=250, title="Total Deaths", toolbar_location = "right", tools="hover,pan,box_zoom,reset")
-p.vbar(x='x', top='counts', width=0.9, source=source, line_color = "white", fill_color=factor_cmap('x', palette=colors, factors=datesWOM, start=1, end=2))
+p = figure(x_range=FactorRange(*x), height=400, title="Cumulative Deaths Normalized by Population x 1 Million", toolbar_location = "right", tools="hover,pan,box_zoom,reset")
+p.vbar(x='x', top='counts', width=0.9, fill_color='color', source=source, line_color = "white")
 hover = p.select(dict(type=HoverTool))
 hover.tooltips = [("Deaths","@counts")]
 p.xaxis.major_label_orientation = 1
@@ -110,8 +113,8 @@ death_rad = [math.radians(percent*360) for percent in death_percent]
 case_percent = list(map(truediv,pie_data['cases'],pie_data['population']))
 case_rad = [math.radians(p*360) for p in case_percent]
 sections = ['Deaths','Cases']
-color = ["red","violet","lightblue"]
-labels = ['Deaths', 'Cases', 'Healthy']
+color = ["maroon","orange","lightblue"]
+labels = ['Deaths', 'New Cases', 'Healthy']
 
 p1start, p1end = getPieAngles(0)
 percent1 = [100*death_percent[0], 100*case_percent[0], 100-((100*death_percent[0]+100*case_percent[0]))]
@@ -180,8 +183,7 @@ p6.axis.visible = False
 tab6 = Panel(child=p6, title="Monaco")
 
 tabs = Tabs(tabs=[tab1,tab2,tab3,tab4,tab5,tab6])
-#show(tabs)
 
 # Put plots into a grid
-grid = gridplot([[p], [tabs]])
+grid = gridplot([[tabs,p]])
 show(grid)
