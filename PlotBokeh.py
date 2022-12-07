@@ -40,6 +40,18 @@ def getPieAngles(case):
     end_angle = [death_rad[case], case_rad[case]+death_rad[case],0]
     return start_angle, end_angle
 
+# function to get deaths per day from cumulative deaths
+def deathRateDaily(list):
+    result = [item - list[idx - 1] for idx, item in enumerate(list)][1:]
+    return result
+
+def deathRateCum(input_list,wom=1,ny=0):
+    if wom == 1:
+        cumDeathRate = input_list[-1] - input_list[0]
+    elif ny == 1:
+        cumDeathRate = sum(input_list)
+    return cumDeathRate
+
 
 # Open json files and convert to a dictionary
 files = ['world-o-meter_2022-12-01.json', 'world-o-meter_2022-12-02.json','world-o-meter_2022-12-03.json','world-o-meter_2022-12-04.json','world-o-meter_2022-12-05.json']
@@ -58,6 +70,7 @@ datesNY = [j.replace('2022_','') for j in datesNY]
 countries = ['USA','France','Brazil','Austria','Greece','Monaco']
 colors = ["#c9d9d3", "#718dbf", "#e84d60",'orange','maroon','green']
 
+# Deaths
 USAdeathsWOM = getData(jsonWOM,'total deaths','USA',0)
 FrancedeathsWOM = getData(jsonWOM,'total deaths','France',0)
 BrazildeathsWOM = getData(jsonWOM,'total deaths','Brazil',0)
@@ -72,6 +85,7 @@ AustriadeathsWOMnorm = getData(jsonWOM,'total deaths','Austria',1)
 GreecedeathsWOMnorm = getData(jsonWOM,'total deaths','Greece',1)
 MonacodeathsWOMnorm = getData(jsonWOM,'total deaths','Monaco',1)
 
+# Cases
 USAcasesWOM = getData(jsonWOM,'total cases','USA',0)
 FrancecasesWOM = getData(jsonWOM,'total cases','France',0)
 BrazilcasesWOM = getData(jsonWOM,'total cases','Brazil',0)
@@ -79,6 +93,7 @@ AustriacasesWOM = getData(jsonWOM,'total cases','Austria',0)
 GreececasesWOM = getData(jsonWOM,'total cases','Greece',0)
 MonacocasesWOM = getData(jsonWOM,'total cases','Monaco',0)
 
+# Population
 USApopWOM = getData(jsonWOM,'population','USA',0)
 FrancepopWOM = getData(jsonWOM,'population','France',0)
 BrazilpopWOM = getData(jsonWOM,'population','Brazil',0)
@@ -86,7 +101,46 @@ AustriapopWOM = getData(jsonWOM,'population','Austria',0)
 GreecepopWOM = getData(jsonWOM,'population','Greece',0)
 MonacopopWOM = getData(jsonWOM,'population','Monaco',0)
 
-# Stacked Bar Plot for Total Deaths
+# Death Rates - Daily
+USAdailydeath = deathRateDaily(USAdeathsWOM)
+Francedailydeath = deathRateDaily(FrancedeathsWOM)
+Brazildailydeath = deathRateDaily(BrazildeathsWOM)
+Austriadailydeath = deathRateDaily(AustriadeathsWOM)
+Greecedailydeath = deathRateDaily(GreecedeathsWOM)
+Monacodailydeath = deathRateDaily(MonacodeathsWOM)
+Bruneidailydeath = getData(jsonNY,'daily deaths avg','Brunei')
+HongKongdailydeath = getData(jsonNY,'daily deaths avg','Hong Kong')
+Japandailydeath = getData(jsonNY,'daily deaths avg','Japan')
+SouthKoreadailydeath = getData(jsonNY,'daily deaths avg','South Korea')
+NewZealandailydeath = getData(jsonNY,'daily deaths avg','New Zealand')
+
+# Death Rates - Daily - Normalized by population * 1M
+USAdailydeath = deathRateDaily(USAdeathsWOMnorm)
+Francedailydeath = deathRateDaily(FrancedeathsWOMnorm)
+Brazildailydeath = deathRateDaily(BrazildeathsWOMnorm)
+Austriadailydeath = deathRateDaily(AustriadeathsWOMnorm)
+Greecedailydeath = deathRateDaily(GreecedeathsWOMnorm)
+Monacodailydeath = deathRateDaily(MonacodeathsWOMnorm)
+Bruneidailydeath = getData(jsonNY,'per 100k','Brunei')*100
+HongKongdailydeath = getData(jsonNY,'per 100k','Hong Kong')*100
+Japandailydeath = getData(jsonNY,'per 100k','Japan')*100
+SouthKoreadailydeath = getData(jsonNY,'per 100k','South Korea')*100
+NewZealandailydeath = getData(jsonNY,'per 100k','New Zealand')*100
+
+# Death Rates - Cumulative
+USAcumdeath = deathRateCum(USAdeathsWOM)
+Francecumdeath = deathRateCum(FrancedeathsWOM)
+Brazilcumdeath = deathRateCum(BrazildeathsWOM)
+Austriacumdeath = deathRateCum(AustriadeathsWOM)
+Greececumdeath = deathRateCum(GreecedeathsWOM)
+Monacocumdeath = deathRateCum(MonacodeathsWOM) 
+Bruneicumdeath = deathRateCum(Bruneidailydeath)
+HongKongcumdeath = deathRateCum(HongKongdailydeath)
+Japancumdeath = deathRateCum(Japandailydeath)
+SouthKoreacumdeath = deathRateCum(SouthKoreadailydeath)
+NewZealancumdeath = deathRateCum(NewZealandailydeath)
+
+# Bar Plot for Total Deaths
 source_data = {'countries': countries,
             '2022_12_05': [USAdeathsWOMnorm[4], FrancedeathsWOMnorm[4], BrazildeathsWOMnorm[4], AustriadeathsWOMnorm[4], GreecedeathsWOMnorm[4], MonacodeathsWOMnorm[4]]}
 
