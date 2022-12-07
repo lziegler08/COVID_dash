@@ -10,16 +10,16 @@ COVID_dash is an interactive dashboard that displays COVID death data from diffe
 
 # Widgets implemented:
 * Pop-up: when the terminal command is entered, a new window in the internet browser should appear
-* Tabs: can select which country data to visualize in a pi chart
+* Tabs: can select which country data to visualize in a pie chart
 * Drop-down menu: can select which country data to visualize in a bar graph.
-
+* Different types of charts: pie chart and bar graphs
 
 # Data
 Data was collected from World-o-meter and the New York Times using the Python library Beautiful Soup.
 
 Sources: 
-https://www.nytimes.com/interactive/2021/us/covid-cases.html
-https://www.worldometers.info/coronavirus/
+* https://www.nytimes.com/interactive/2021/us/covid-cases.html
+* https://www.worldometers.info/coronavirus/
 
 
 
