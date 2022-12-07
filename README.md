@@ -4,7 +4,7 @@ COVID_dash is an interactive dashboard that displays COVID death data from diffe
 # Installation
 * Download COVID_dash-main as a zip file form GitHub and unzip in preferred directory
 * Install Bokeh version 2.3.2 - you will need to run locally on a Bokeh server. This is the only version of Bokeh that this code has been tested on. 
-* Open a terminal and navigate to the COVID_dash-main directory is
+* Open a terminal and navigate to the COVID_dash-main/Dashboard directory. This directory should contain data for 5 days and a python script to display the data
 * From the directory, type in the terminal command: bokeh serve --show PlotBokeh.py
 * A window in your internet browser should appear
 
