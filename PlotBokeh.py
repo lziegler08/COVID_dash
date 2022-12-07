@@ -3,12 +3,12 @@
 # Input: json data files
 
 import json
-from bokeh.plotting import figure, show
+from bokeh.plotting import figure, show, curdoc
 from bokeh.transform import factor_cmap
-from bokeh.models import ColumnDataSource, CustomJS, FactorRange, HoverTool, Legend
-from bokeh.layouts import column, row, gridplot
+from bokeh.models import ColumnDataSource, FactorRange, HoverTool, Legend, Dropdown, CustomJS
+from bokeh.layouts import column, row, gridplot, widgetbox
 from bokeh.models.widgets import Panel, Tabs
-from bokeh.palettes import Spectral6
+from bokeh.palettes import Spectral6,Spectral4
 from operator import truediv
 import math
 
@@ -64,7 +64,7 @@ jsonNY = [jsonToDict(nyfiles[0]),jsonToDict(nyfiles[1]),jsonToDict(nyfiles[2]),j
 datesWOM = getData(jsonWOM,'date collected','USA')
 datesWOM = [i.replace('-','_') for i in datesWOM]
 datesWOM = [j.replace('2022_','') for j in datesWOM]
-datesNY = getData(jsonNY,'date collected','USA')
+datesNY = getData(jsonNY,'date collected','Brunei')
 datesNY = [i.replace('-','_') for i in datesNY]
 datesNY = [j.replace('2022_','') for j in datesNY]
 countries = ['USA','France','Brazil','Austria','Greece','Monaco']
@@ -140,7 +140,7 @@ Japancumdeath = deathRateCum(Japandailydeath)
 SouthKoreacumdeath = deathRateCum(SouthKoreadailydeath)
 NewZealancumdeath = deathRateCum(NewZealandailydeath)
 
-# Bar Plot for Total Deaths
+# BAR PLOT FOR CUMULATIVE DEATHS BY POPULATION X 1M
 source_data = {'countries': countries,
             '2022_12_05': [USAdeathsWOMnorm[4], FrancedeathsWOMnorm[4], BrazildeathsWOMnorm[4], AustriadeathsWOMnorm[4], GreecedeathsWOMnorm[4], MonacodeathsWOMnorm[4]]}
 
@@ -238,6 +238,31 @@ tab6 = Panel(child=p6, title="Monaco")
 
 tabs = Tabs(tabs=[tab1,tab2,tab3,tab4,tab5,tab6])
 
+# BAR PLOT FOR DEATH RATES WITH AVERAGE SHOWN AS A LINE
+sourceBar = ColumnDataSource(data=dict(x=datesNY,y=USAdailydeath,color=Spectral4))
+pbar = figure(plot_width = 400, plot_height = 400)
+pbar.vbar(x='x',top='y', width=0.9, fill_color='color', source=sourceBar, line_color = "white")
+
+# dropdown menu
+menu = Dropdown(label='Select a country', button_type='warning', menu=[("USA","USA"),("France","France"),("Brazil","Brazil")])
+
+# function for dropdown options
+menu.js_on_event
+        
+# menu.on_click("menu_item_click", CustomJS(args={'name':name}, code=""))
+def update_plot(new):
+    if new == "USA":
+        pbar.title.text = "USA"
+        sourceBar.data = dict(x=datesNY,y=USAdailydeath[1:])
+    elif new =="France":
+        pbar.title.text = "France"
+        sourceBar.data = dict(x=datesNY,y=Francedailydeath[1:])
+    elif new =="Brazil":
+        pbar.title.text = "Brazil"
+        sourceBar.data = dict(x=datesNY,y=Brazildailydeath[1:])
+layoutpbar = column(pbar,menu)
+
 # Put plots into a grid
-grid = gridplot([[tabs,p]])
+grid = gridplot([[tabs,p],[layoutpbar]])
+# curdoc().add_root(grid)
 show(grid)
