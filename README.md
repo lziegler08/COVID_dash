@@ -15,7 +15,7 @@ COVID_dash is an interactive dashboard that displays COVID death data from diffe
 * Different types of charts: pie chart and bar graphs
 
 # Data
-Data was collected from World-o-meter and the New York Times using the Python library Beautiful Soup for dates 12/1/2022 to 12/5/2022.
+Data was collected from World-o-meter and the New York Times using the Python library Beautiful Soup for dates 12/1/2022 to 12/5/2022. The data displayed is cumulative death in population per country, cumulative deaths normalized by population per 1M people, raw daily death rates per country, and normalized death rates per country.
 
 Sources: 
 * https://www.nytimes.com/interactive/2021/us/covid-cases.html
