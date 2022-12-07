@@ -59,8 +59,8 @@ class ScrapeWebsite:
                 if c.lower() == dList[self.nameIDX].lower():
                     countryProfiles['name'].append(dList[self.nameIDX])
                     countryProfiles['population'].append(float(dList[self.popIDX].replace(',', '')))
-                    countryProfiles['total cases'].append(float(dList[self.casesIDX].replace(',', '')))
-                    countryProfiles['total deaths'].append(float(dList[self.deathIDX].replace(',', '')))
+                    countryProfiles['total deaths'].append(float(dList[self.casesIDX].replace(',', '')))
+                    countryProfiles['total cases'].append(float(dList[self.deathIDX].replace(',', '')))
                     countryProfiles['date collected'].append(today)
                     break
         return countryProfiles 
@@ -118,7 +118,7 @@ countries = ['brazil', 'usa', 'france', 'austria', 'Monaco', 'greece', 'brunei',
 
 wom_url = 'https://www.worldometers.info/coronavirus/#countries'
 wom_siteName = 'world-o-meter'
-wom_savePath = '/Users/lauraziegler/Documents/GitHub/COVID_dash/' #'/Users/lauraziegler/Documents/Python/COVID_dash/P1/'#
+wom_savePath = '/Users/lauraziegler/Documents/Python/COVID_dash/P1/'#'/Users/lauraziegler/Documents/GitHub/COVID_dash/'
 wom_attr = 'id'
 wom_attr_val = 'main_table_countries_today'
 wom = ScrapeWebsite(countries, wom_url, wom_siteName, wom_savePath,\
@@ -129,7 +129,7 @@ print(wom_data)
 
 nyt_url = 'https://www.nytimes.com/interactive/2021/world/covid-cases.html'
 nyt_siteName = 'ny_times'
-nyt_savePath = '/Users/lauraziegler/Documents/GitHub/COVID_dash/' # '/Users/lauraziegler/Documents/Python/COVID_dash/P1/' #
+nyt_savePath =  '/Users/lauraziegler/Documents/Python/COVID_dash/P1/' #'/Users/lauraziegler/Documents/GitHub/COVID_dash/'
 nyt_attr = 'class'
 nyt_attr_val = 'g-table super-table withchildren'
 nyt =  ScrapeWebsite(countries, nyt_url, nyt_siteName, nyt_savePath,\
