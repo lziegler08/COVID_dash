@@ -5,10 +5,10 @@
 import json
 from bokeh.plotting import figure, show, curdoc
 from bokeh.transform import factor_cmap
-from bokeh.models import ColumnDataSource, FactorRange, HoverTool, Legend, Dropdown, CustomJS
+from bokeh.models import ColumnDataSource, FactorRange, HoverTool, Legend, Select, Paragraph, CustomJS, Div
 from bokeh.layouts import column, row, gridplot, widgetbox
-from bokeh.models.widgets import Panel, Tabs
-from bokeh.palettes import Spectral6,Spectral4
+from bokeh.models.widgets import Panel, Tabs, Button
+from bokeh.palettes import Spectral6,Spectral4,BuPu4,OrRd4
 from operator import truediv
 import math
 
@@ -21,7 +21,7 @@ def jsonToDict(file):
     return data
 
 # function to get certain data from dictionaries
-def getData(files,type,pos,norm = 0,ny=0):
+def getData(files,type,pos,norm = 0,ny=0,daily=0):
     results = []
     for file in files:
         for i,c in enumerate(file['name']):
@@ -30,7 +30,9 @@ def getData(files,type,pos,norm = 0,ny=0):
                 if norm == 1: #normalize for population per 1M
                     temp = (temp/(file['population'][i])*100000000)
                 if ny == 1: #normaliz for population per 1M
-                    temp = (temp/(file['per 100k'][i])*100)
+                    temp = (float(temp)*100.0)
+                if daily == 1:
+                    temp = float(temp)*7.0
                 results.append(temp)
     return results
 
@@ -108,24 +110,24 @@ Brazildailydeath = deathRateDaily(BrazildeathsWOM)
 Austriadailydeath = deathRateDaily(AustriadeathsWOM)
 Greecedailydeath = deathRateDaily(GreecedeathsWOM)
 Monacodailydeath = deathRateDaily(MonacodeathsWOM)
-Bruneidailydeath = getData(jsonNY,'daily deaths avg','Brunei')
-HongKongdailydeath = getData(jsonNY,'daily deaths avg','Hong Kong')
-Japandailydeath = getData(jsonNY,'daily deaths avg','Japan')
-SouthKoreadailydeath = getData(jsonNY,'daily deaths avg','South Korea')
-NewZealandailydeath = getData(jsonNY,'daily deaths avg','New Zealand')
+Bruneidailydeath = getData(jsonNY,'daily deaths avg','Brunei',0,0,1)
+HongKongdailydeath = getData(jsonNY,'daily deaths avg','Hong Kong',0,0,1)
+Japandailydeath = getData(jsonNY,'daily deaths avg','Japan',0,0,1)
+SouthKoreadailydeath = getData(jsonNY,'daily deaths avg','South Korea',0,0,1)
+NewZealandailydeath = getData(jsonNY,'daily deaths avg','New Zealand',0,0,1)
 
 # Death Rates - Daily - Normalized by population * 1M
-USAdailydeath = deathRateDaily(USAdeathsWOMnorm)
-Francedailydeath = deathRateDaily(FrancedeathsWOMnorm)
-Brazildailydeath = deathRateDaily(BrazildeathsWOMnorm)
-Austriadailydeath = deathRateDaily(AustriadeathsWOMnorm)
-Greecedailydeath = deathRateDaily(GreecedeathsWOMnorm)
-Monacodailydeath = deathRateDaily(MonacodeathsWOMnorm)
-Bruneidailydeath = getData(jsonNY,'per 100k','Brunei')*100
-HongKongdailydeath = getData(jsonNY,'per 100k','Hong Kong')*100
-Japandailydeath = getData(jsonNY,'per 100k','Japan')*100
-SouthKoreadailydeath = getData(jsonNY,'per 100k','South Korea')*100
-NewZealandailydeath = getData(jsonNY,'per 100k','New Zealand')*100
+USAdailydeathnorm = deathRateDaily(USAdeathsWOMnorm)
+Francedailydeathnorm = deathRateDaily(FrancedeathsWOMnorm)
+Brazildailydeathnorm = deathRateDaily(BrazildeathsWOMnorm)
+Austriadailydeathnorm = deathRateDaily(AustriadeathsWOMnorm)
+Greecedailydeathnorm = deathRateDaily(GreecedeathsWOMnorm)
+Monacodailydeathnorm = deathRateDaily(MonacodeathsWOMnorm)
+Bruneidailydeathnorm = getData(jsonNY,'per 100k','Brunei',0,1)
+HongKongdailydeathnorm = getData(jsonNY,'per 100k','Hong Kong',0,1)
+Japandailydeathnorm = getData(jsonNY,'per 100k','Japan',0,1)
+SouthKoreadailydeathnorm = getData(jsonNY,'per 100k','South Korea',0,1)
+NewZealandailydeathnorm = getData(jsonNY,'per 100k','New Zealand',0,1)
 
 # Death Rates - Cumulative
 USAcumdeath = deathRateCum(USAdeathsWOM)
@@ -239,30 +241,118 @@ tab6 = Panel(child=p6, title="Monaco")
 tabs = Tabs(tabs=[tab1,tab2,tab3,tab4,tab5,tab6])
 
 # BAR PLOT FOR DEATH RATES WITH AVERAGE SHOWN AS A LINE
-sourceBar = ColumnDataSource(data=dict(x=datesNY,y=USAdailydeath,color=Spectral4))
-pbar = figure(plot_width = 400, plot_height = 400)
-pbar.vbar(x='x',top='y', width=0.9, fill_color='color', source=sourceBar, line_color = "white")
-
-# dropdown menu
-menu = Dropdown(label='Select a country', button_type='warning', menu=[("USA","USA"),("France","France"),("Brazil","Brazil")])
+sourceBar = ColumnDataSource(data=dict(x=datesNY,y=USAdailydeath,color=OrRd4))
+pbar = figure(x_range=datesNY, width = 400, height = 400, title="Daily Death Rates", toolbar_location = "right", tools='pan')
+pbar.vbar(x='x', top='y', width=0.9, fill_color='color', source=sourceBar, line_color = "white")
+print(dict(x=datesNY,y=USAdailydeath,color=Spectral4))
 
 # function for dropdown options
-menu.js_on_event
-        
-# menu.on_click("menu_item_click", CustomJS(args={'name':name}, code=""))
-def update_plot(new):
-    if new == "USA":
-        pbar.title.text = "USA"
-        sourceBar.data = dict(x=datesNY,y=USAdailydeath[1:])
-    elif new =="France":
-        pbar.title.text = "France"
-        sourceBar.data = dict(x=datesNY,y=Francedailydeath[1:])
-    elif new =="Brazil":
-        pbar.title.text = "Brazil"
-        sourceBar.data = dict(x=datesNY,y=Brazildailydeath[1:])
-layoutpbar = column(pbar,menu)
+country = 'USA'
+
+def update_plot(attr, old, new):
+    country = menu.value
+    if country == "USA":
+        pbar.title.text = "USA Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=USAdailydeath,color=OrRd4)
+    elif country =="France":
+        pbar.title.text = "France Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=Francedailydeath,color=OrRd4)
+    elif country =="Brazil":
+        pbar.title.text = "Brazil Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=Brazildailydeath,color=OrRd4)
+    elif country =="Austria":
+        pbar.title.text = "Austria Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=Austriadailydeath,color=OrRd4)
+    elif country =="Greece":
+        pbar.title.text = "Greece Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=Greecedailydeath,color=OrRd4)
+    elif country =="Monaco":
+        pbar.title.text = "Monaco Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=Monacodailydeath,color=OrRd4)
+    elif country =="Brunei":
+        pbar.title.text = "Brunei Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=Bruneidailydeath,color=OrRd4)
+    elif country =="Hong Kong":
+        pbar.title.text = "Hong Kong Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=HongKongdailydeath,color=OrRd4)
+    elif country =="Japan":
+        pbar.title.text = "Japan Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=Japandailydeath,color=OrRd4)
+    elif country =="South Korea":
+        pbar.title.text = "South Korea Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=SouthKoreadailydeath,color=OrRd4)
+    elif country =="New Zealand":
+        pbar.title.text = "New Zealand Daily Death Rate [people per day]"
+        sourceBar.data = dict(x=datesNY,y=NewZealandailydeath,color=OrRd4)
+
+# dropdown menu
+menu = Select(value = country, title='Daily Death Rates Normalized: Pick A Country', options=["USA","France","Brazil","Austria","Greece","Monaco","Brunei","Hong Kong","Japan","South Korea","New Zealand"])
+
+menu.on_change('value', update_plot)
+layoutpbar = column(menu,pbar)
+
+# BAR PLOT FOR DEATH RATES WITH AVERAGE SHOWN AS A LINE
+sourceBar2 = ColumnDataSource(data=dict(x=datesNY,y=USAdailydeathnorm,color=BuPu4))
+pbar2 = figure(x_range=datesNY, width = 400, height = 400, title="Daily Death Rates Normalized", toolbar_location = "right", tools='pan')
+pbar2.vbar(x='x', top='y', width=0.9, fill_color='color', source=sourceBar2, line_color = "white")
+
+# function for dropdown options
+country2 = 'USA'
+
+def update_plot2(attr, old, new):
+    country2 = menu2.value
+    if country2 == "USA":
+        pbar2.title.text = "USA Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=USAdailydeathnorm,color=BuPu4)
+    elif country2 =="France":
+        pbar2.title.text = "France Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=Francedailydeathnorm,color=BuPu4)
+    elif country2 =="Brazil":
+        pbar2.title.text = "Brazil Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=Brazildailydeathnorm,color=BuPu4)
+    elif country2 =="Austria":
+        pbar2.title.text = "Austria Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=Austriadailydeathnorm,color=BuPu4)
+    elif country2 =="Greece":
+        pbar2.title.text = "Greece Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=Greecedailydeathnorm,color=BuPu4)
+    elif country2 =="Monaco":
+        pbar2.title.text = "Monaco Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=Monacodailydeathnorm,color=BuPu4)
+    elif country2 =="Brunei":
+        pbar2.title.text = "Brunei Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=Bruneidailydeathnorm,color=BuPu4)
+    elif country2 =="Hong Kong":
+        pbar2.title.text = "Hong Kong Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=HongKongdailydeathnorm,color=BuPu4)
+    elif country2 =="Japan":
+        pbar2.title.text = "Japan Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=Japandailydeathnorm,color=BuPu4)
+    elif country2 =="South Korea":
+        pbar2.title.text = "South Korea Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=SouthKoreadailydeathnorm,color=BuPu4)
+    elif country2 =="New Zealand":
+        pbar2.title.text = "New Zealand Daily Death Rate Normalized x 1M"
+        sourceBar2.data = dict(x=datesNY,y=NewZealandailydeathnorm,color=BuPu4)
+
+# dropdown menu
+menu2 = Select(value = country2, title='Daily Death Rates: Pick A Country', options=["USA","France","Brazil","Austria","Greece","Monaco","Brunei","Hong Kong","Japan","South Korea","New Zealand"])
+
+menu2.on_change('value', update_plot2)
+layoutpbar2 = column(menu2,pbar2)
+
+# BUTTON
+
+notifications = Div(text='')
+button = Button(label="Click for information about data")
+def button_call():
+    notifications.text = "Data was collected from World-o-meter and the New York Times."
+button.on_click(button_call)
+box = widgetbox(button, notifications)
 
 # Put plots into a grid
-grid = gridplot([[tabs,p],[layoutpbar]])
-# curdoc().add_root(grid)
-show(grid)
+grid = gridplot([[tabs,p],[layoutpbar,layoutpbar2,box]])
+curdoc().add_root(grid)
+
+# bokeh serve --show PlotBokeh.py
+# show(grid)
