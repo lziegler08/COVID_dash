@@ -1,5 +1,5 @@
 # COVID_dash:
-COVID_dash is an interactive dashboard that displays COVID death data from different countries. This tool was built by scraping data from World-o-meter and the New York Times using the Python Library Beautiful Soup, and displayed using the Python library Bokeh. 
+COVID_dash is an interactive dashboard that displays COVID death data from different countries. This tool was built by scraping data from World-o-meter and the New York Times using the Python Library Beautiful Soup, and displayed using the Python library Bokeh version 2.3.2. 
 
 # Installation
 * Download COVID_dash-main as a zip file form GitHub and unzip in preferred directory
