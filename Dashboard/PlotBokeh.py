@@ -348,7 +348,7 @@ button = Button(label="Click for information about data")
 def button_call():
     notifications.text = "Data was collected from World-o-meter and the New York Times."
 button.on_click(button_call)
-box = widgetbox(button, notifications)
+box = column(button, notifications)
 
 # Put plots into a grid
 grid = gridplot([[tabs,p],[layoutpbar,layoutpbar2,box]])
