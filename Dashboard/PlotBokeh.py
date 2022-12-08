@@ -6,7 +6,7 @@ import json
 from bokeh.plotting import figure, show, curdoc
 from bokeh.transform import factor_cmap
 from bokeh.models import ColumnDataSource, FactorRange, HoverTool, Legend, Select, Paragraph, CustomJS, Div
-from bokeh.layouts import column, row, gridplot, widgetbox
+from bokeh.layouts import column, row, gridplot
 from bokeh.models.widgets import Panel, Tabs, Button
 from bokeh.palettes import Spectral6,Spectral4,BuPu4,OrRd4
 from operator import truediv
