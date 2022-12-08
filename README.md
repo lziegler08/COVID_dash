@@ -8,7 +8,7 @@ COVID_dash is an interactive dashboard that displays COVID death data from diffe
 * From the directory, type in the terminal command: bokeh serve --show PlotBokeh.py
 * A window in your internet browser should appear
 
-# Widgets implemented:
+# Widgets implemented
 * Pop-up: when the terminal command is entered, a new window in the internet browser should appear
 * Tabs: can select which country data to visualize in a pie chart
 * Drop-down menu: can select which country data to visualize in a bar graph
@@ -22,3 +22,7 @@ Data was collected from World-o-meter and the New York Times using the Python li
 Sources: 
 * https://www.nytimes.com/interactive/2021/us/covid-cases.html
 * https://www.worldometers.info/coronavirus/
+
+# Image of dashboard
+
+<img width="1421" alt="Screenshot 2022-12-07 at 8 24 20 PM" src="https://user-images.githubusercontent.com/98780640/206349227-48027577-8130-4883-a028-d73270983683.png">
